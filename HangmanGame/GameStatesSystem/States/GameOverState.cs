@@ -3,48 +3,51 @@ using CSharpConsoleHangmanGame.GameStatesSystem.Interfaces;
 
 namespace CSharpConsoleHangmanGame.GameStatesSystem.States
 {
-    internal class MenuState : IGameState
+    internal class GameOverState : IGameState
     {
         readonly IDialogueController dialogueController;
         readonly IDialogueDatabase dialogueDatabase;
+        readonly bool win;
 
-        public MenuState(IDialogueController dialogueController, IDialogueDatabase dialogueDatabase)
+        public GameOverState(IDialogueController dialogueController, IDialogueDatabase dialogueDatabase, bool win)
         {
             this.dialogueController = dialogueController;
             this.dialogueDatabase = dialogueDatabase;
+            this.win = win;
         }
 
-        public void StartGame()
+        internal void PlayAgain()
         {
-            /*dialogueController.ShowMessage("StartGame()");*/
+
         }
 
-        public void ExitGame()
+        internal void ExitToMenu()
         {
-            /*dialogueController.ShowMessage("ExitGame()");*/
+
         }
 
         public void Enter()
         {
-            /*dialogueController.ShowMessage("Enter()");*/
         }
 
         public void Exit()
         {
-            /*dialogueController.ShowMessage("Exiting Menu State.");*/
+
         }
 
         public IGameState? Update()
         {
+            dialogueDatabase.GameOverDialogueDatabase().ShowResultsMsg(win);
             IGameState? returnState = this;
-            dialogueDatabase.MenuDialogueDatabase().AskUserOptionStartGameOrExitGame(
-                () => {
-                    StartGame();
+            dialogueDatabase.GameOverDialogueDatabase().AskUserOptionPlayAgainOrExitToMenu(
+                () =>
+                {
+                    PlayAgain();
                     returnState = new InGameState(dialogueController, dialogueDatabase);
                 },
                 () => {
-                    ExitGame();
-                    returnState = null;
+                    ExitToMenu();
+                    returnState = new MenuState(dialogueController, dialogueDatabase);
                 }
             );
 

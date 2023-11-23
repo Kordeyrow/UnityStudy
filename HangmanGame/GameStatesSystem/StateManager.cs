@@ -34,11 +34,15 @@ namespace CSharpConsoleHangmanGame.GameStatesSystem
             if (currentState == null)
                 return;
 
-            IGameState nextState = currentState.Update();
-            if (nextState != null && nextState != currentState)
-            {
+            var nextState = currentState.Update();
+
+            if (nextState == currentState)
+                return;
+
+            if (nextState != null)
                 ChangeState(nextState);
-            }
+
+            currentState = nextState;
         }
     }
 }

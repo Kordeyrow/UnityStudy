@@ -10,6 +10,6 @@ namespace CSharpConsoleHangmanGame.GameStatesSystem.Interfaces
     {
         void Enter();
         void Exit();
-        IGameState Update();
+        IGameState? Update();
     }
 }

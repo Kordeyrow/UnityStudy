@@ -16,7 +16,7 @@ namespace CSharpConsoleHangmanGame
     internal class Game
     {
         readonly StateManager stateManager;
-        readonly TimeSpan frameDuration = new(0,0,0,0,100);
+        readonly TimeSpan userInputEffectDelay = new(0,0,0,0,100);
         readonly IDialogueController dialogueController;
 
         internal Game()
@@ -40,12 +40,12 @@ namespace CSharpConsoleHangmanGame
             while (stateManager.HasState())
             {
                 stateManager.Update();
-                WaitFrameDuration(frameDuration);
+                WaitDuration(userInputEffectDelay);
                 dialogueController.Clear();
             }
         }
 
-        internal static void WaitFrameDuration(TimeSpan timeout)
+        internal static void WaitDuration(TimeSpan timeout)
         {
             Thread.Sleep(timeout);
         }

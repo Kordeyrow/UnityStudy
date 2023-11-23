@@ -9,10 +9,24 @@ namespace CSharpConsoleHangmanGame.DialogueSystem.Interfaces
     internal interface IDialogueDatabase
     {
         IMenuDialogueDatabase MenuDialogueDatabase();
+        IInGameDialogueDatabase InGameDialogueDatabase();
+        IGameOverDialogueDatabase GameOverDialogueDatabase();
     }
 
     internal interface IMenuDialogueDatabase
     {
-        void GetUserOptionStartGameOrExit(Action startGameAction, Action exitGameAction);
+        void AskUserOptionStartGameOrExitGame(Action startGameAction, Action exitGameAction);
+    }
+
+    internal interface IInGameDialogueDatabase
+    {
+        void ShowStartGameMsg();
+        string? AskForLetter();
+    }
+
+    internal interface IGameOverDialogueDatabase
+    {
+        void ShowResultsMsg(bool win);
+        void AskUserOptionPlayAgainOrExitToMenu(Action playAgainAction, Action exitToMenuAction);
     }
 }
