@@ -1,4 +1,4 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
+﻿using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +7,27 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpConsoleHangmanGame.WordHangmanSystem
+namespace CSharpConsoleHangmanGame.SecretWordHangman
 {
     internal class SecretWord
     {
         readonly IDialogueController dialogueController;
         readonly char hiddenLetterSymbol = '_';
-        readonly string secretWord;
-        readonly char[] hiddenLetters;
+        string secretWord;
+        char[] hiddenLetters;
+        HashSet<char> hiddenUniqueLetters;
         string hiddenLettersAsString;
-        readonly HashSet<char> hiddenUniqueLetters;
 
         internal string Word => secretWord;
         internal string HiddenLetters => hiddenLettersAsString;
 
-        internal SecretWord(string word, IDialogueController dialogueController)
+        internal SecretWord(IDialogueController dialogueController)
         {
             this.dialogueController = dialogueController;
+        }
+
+        internal void Init(string word)
+        {
             secretWord = word.ToLower();
             hiddenLetters = new string(hiddenLetterSymbol, word.Length).ToCharArray();
             hiddenLettersAsString = CharArrayToSpacedString(hiddenLetters);

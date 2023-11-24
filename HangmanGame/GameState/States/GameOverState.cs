@@ -1,16 +1,19 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
-using CSharpConsoleHangmanGame.GameStatesSystem.Interfaces;
+﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.GameState.Interfaces;
 
-namespace CSharpConsoleHangmanGame.GameStatesSystem.States
+namespace CSharpConsoleHangmanGame.GameState.States
 {
     internal class GameOverState : IGameState
     {
+        readonly IDebugLog debugLog;
         readonly IDialogueController dialogueController;
         readonly IDialogueDatabase dialogueDatabase;
         readonly bool win;
 
-        public GameOverState(IDialogueController dialogueController, IDialogueDatabase dialogueDatabase, bool win)
+        public GameOverState(IDebugLog debugLog, IDialogueController dialogueController, IDialogueDatabase dialogueDatabase, bool win)
         {
+            this.debugLog = debugLog;
             this.dialogueController = dialogueController;
             this.dialogueDatabase = dialogueDatabase;
             this.win = win;
@@ -43,11 +46,11 @@ namespace CSharpConsoleHangmanGame.GameStatesSystem.States
                 () =>
                 {
                     PlayAgain();
-                    returnState = new InGameState(dialogueController, dialogueDatabase);
+                    returnState = new InGameState(debugLog, dialogueController, dialogueDatabase);
                 },
                 () => {
                     ExitToMenu();
-                    returnState = new MenuState(dialogueController, dialogueDatabase);
+                    returnState = new MenuState(debugLog, dialogueController, dialogueDatabase);
                 }
             );
 

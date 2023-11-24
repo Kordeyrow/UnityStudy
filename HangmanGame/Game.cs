@@ -1,53 +1,51 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem;
-using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
-using CSharpConsoleHangmanGame.DialogueSystem.InputOptions;
-using CSharpConsoleHangmanGame.GameStatesSystem;
-using CSharpConsoleHangmanGame.GameStatesSystem.Interfaces;
-using CSharpConsoleHangmanGame.GameStatesSystem.States;
+﻿using CSharpConsoleHangmanGame.Dialogue;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.InputOptionsKeys;
+using CSharpConsoleHangmanGame.GameState;
+using CSharpConsoleHangmanGame.GameState.Interfaces;
+using CSharpConsoleHangmanGame.GameState.States;
 using CSharpConsoleHangmanGame.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CSharpConsoleHangmanGame.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Debugging;
 
 namespace CSharpConsoleHangmanGame
 {
     internal class Game
     {
-        readonly StateManager stateManager;
-        readonly TimeSpan userInputEffectDelay = new(0,0,0,0,100);
-        readonly IDialogueController dialogueController;
+        readonly GameStateManager gameStateManager;
 
         internal Game()
         {
-            // Controlls Input and Output to communicate with User
-            dialogueController = new ConsoleDialogueController();
+            // Output messages for developer
+            IDebugLog debugLog = new DebugLog();
 
-            // Has all the options keys that User can type
-            IInputOptions inputOptions = new NumberInputOptions();
+            // Dialogue I/O: game Output / player Input
+            IDialogueController dialogueController = new ConsoleDialogueController();
 
-            // Has all the messages to User
+            // Player input options keys
+            IInputOptionsKeys inputOptions = new NumberInputOptionsKeys();
+
+            // Dialogue database (by language)
             IDialogueDatabase dialogueDatabase = new BRDialogueDatabase(dialogueController, inputOptions);
 
             // Game State
-            IGameState initialGameState = new MenuState(dialogueController, dialogueDatabase);
-            this.stateManager = new StateManager(initialGameState);
+            IGameState initialGameState = new MenuState(debugLog, dialogueController, dialogueDatabase);
+            gameStateManager = new GameStateManager(dialogueController, initialGameState);
         }
 
         internal void Run()
         {
-            while (stateManager.HasState())
-            {
-                stateManager.Update();
-                WaitDuration(userInputEffectDelay);
-                dialogueController.Clear();
-            }
-        }
+            gameStateManager.Start();
 
-        internal static void WaitDuration(TimeSpan timeout)
-        {
-            Thread.Sleep(timeout);
+            while (gameStateManager.HasState())
+            {
+                gameStateManager.UpdateCurrentState();
+            }
         }
     }
 }

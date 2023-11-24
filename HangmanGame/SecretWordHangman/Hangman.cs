@@ -1,11 +1,11 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
+﻿using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpConsoleHangmanGame.WordHangmanSystem
+namespace CSharpConsoleHangmanGame.SecretWordHangman
 {
     internal class Hangman
     {
@@ -19,6 +19,12 @@ namespace CSharpConsoleHangmanGame.WordHangmanSystem
         {
             this.dialogueController = dialogueController;
             totalParts = partsSymbols.Length;
+        }
+
+        internal void Init()
+        {
+            currentParts = 0;
+            currentPartsSymbols = "";
         }
 
         internal void AddPart()

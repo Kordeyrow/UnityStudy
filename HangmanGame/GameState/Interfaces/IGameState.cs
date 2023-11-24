@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpConsoleHangmanGame.GameStatesSystem.Interfaces
+namespace CSharpConsoleHangmanGame.GameState.Interfaces
 {
     internal interface IGameState
     {

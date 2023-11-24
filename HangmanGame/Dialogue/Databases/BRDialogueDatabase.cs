@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CSharpConsoleHangmanGame.DialogueSystem.Databases;
-using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.Databases;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 
-namespace CSharpConsoleHangmanGame.DialogueSystem
+namespace CSharpConsoleHangmanGame.Dialogue
 {
     internal class BRDialogueDatabase : BaseDialogueDatabase, IDialogueDatabase
     {
-        public BRDialogueDatabase(IDialogueController dialogueController, IInputOptions inputOptions) : base(dialogueController, inputOptions)
+        public BRDialogueDatabase(IDialogueController dialogueController, IInputOptionsKeys inputOptions) : base(dialogueController, inputOptions)
         {
         }
 
@@ -33,7 +33,7 @@ namespace CSharpConsoleHangmanGame.DialogueSystem
     internal class BRMenuDialogueDatabase : BaseDialogueDatabase, IMenuDialogueDatabase
     {
 
-        public BRMenuDialogueDatabase(IDialogueController dialogueController, IInputOptions inputOptions) : base(dialogueController, inputOptions)
+        public BRMenuDialogueDatabase(IDialogueController dialogueController, IInputOptionsKeys inputOptions) : base(dialogueController, inputOptions)
         {
         }
 
@@ -77,7 +77,7 @@ namespace CSharpConsoleHangmanGame.DialogueSystem
 
     internal class BRInGameDialogueDatabase : BaseDialogueDatabase, IInGameDialogueDatabase
     {
-        public BRInGameDialogueDatabase(IDialogueController dialogueController, IInputOptions inputOptions) : base(dialogueController, inputOptions)
+        public BRInGameDialogueDatabase(IDialogueController dialogueController, IInputOptionsKeys inputOptions) : base(dialogueController, inputOptions)
         {
         }
 
@@ -99,7 +99,7 @@ namespace CSharpConsoleHangmanGame.DialogueSystem
 
     internal class BRGameOverDialogueDatabase : BaseDialogueDatabase, IGameOverDialogueDatabase
     {
-        public BRGameOverDialogueDatabase(IDialogueController dialogueController, IInputOptions inputOptions) : base(dialogueController, inputOptions)
+        public BRGameOverDialogueDatabase(IDialogueController dialogueController, IInputOptionsKeys inputOptions) : base(dialogueController, inputOptions)
         {
         }
 

@@ -1,5 +1,5 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem;
-using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
+﻿using CSharpConsoleHangmanGame.Dialogue;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

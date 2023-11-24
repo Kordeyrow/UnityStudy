@@ -1,15 +1,19 @@
-﻿using CSharpConsoleHangmanGame.DialogueSystem.Interfaces;
-using CSharpConsoleHangmanGame.GameStatesSystem.Interfaces;
+﻿using CSharpConsoleHangmanGame.Debugging;
+using CSharpConsoleHangmanGame.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.GameState.Interfaces;
 
-namespace CSharpConsoleHangmanGame.GameStatesSystem.States
+namespace CSharpConsoleHangmanGame.GameState.States
 {
     internal class MenuState : IGameState
     {
+        readonly IDebugLog debugLog;
         readonly IDialogueController dialogueController;
         readonly IDialogueDatabase dialogueDatabase;
 
-        public MenuState(IDialogueController dialogueController, IDialogueDatabase dialogueDatabase)
+        public MenuState(IDebugLog debugLog, IDialogueController dialogueController, IDialogueDatabase dialogueDatabase)
         {
+            this.debugLog = debugLog;
             this.dialogueController = dialogueController;
             this.dialogueDatabase = dialogueDatabase;
         }
@@ -40,7 +44,7 @@ namespace CSharpConsoleHangmanGame.GameStatesSystem.States
             dialogueDatabase.MenuDialogueDatabase().AskUserOptionStartGameOrExitGame(
                 () => {
                     StartGame();
-                    returnState = new InGameState(dialogueController, dialogueDatabase);
+                    returnState = new InGameState(debugLog, dialogueController, dialogueDatabase);
                 },
                 () => {
                     ExitGame();

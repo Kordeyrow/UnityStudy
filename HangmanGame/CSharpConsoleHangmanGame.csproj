@@ -7,4 +7,31 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="GameData\Words\**" />
+    <EmbeddedResource Remove="GameData\Words\**" />
+    <None Remove="GameData\Words\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="GameData\Configs.txt" />
+    <None Remove="GameData\Words.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="GameData\Dialogues\pt-br.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+<ItemGroup>
+	<Content Include="GameData\BuildGameData\**">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
+</ItemGroup>
+
+<ItemGroup>
+  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+</ItemGroup>
+
 </Project>

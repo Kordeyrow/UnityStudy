@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpConsoleHangmanGame.DialogueSystem.Interfaces
+namespace CSharpConsoleHangmanGame.Dialogue.Interfaces
 {
     internal interface IDialogueController
     {
