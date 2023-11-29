@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSharpConsoleHangmanGame.Dialogue.Interfaces;
-using CSharpConsoleHangmanGame.GameState.Interfaces;
+﻿using CSharpConsoleHangmanGame.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.GameStates.Interfaces;
 
-namespace CSharpConsoleHangmanGame.GameState
+namespace CSharpConsoleHangmanGame.GameStates
 {
-    internal class GameStateManager
+    internal class GameStateManager : IGameStateManager
     {
         readonly IDialogueController dialogueController;
         readonly TimeSpan userInputEffectDelay = new(0, 0, 0, 0, 100);
@@ -20,12 +15,12 @@ namespace CSharpConsoleHangmanGame.GameState
             this.currentState = initialState;
         }
 
-        internal void Start()
+        public void Start()
         {
             currentState?.Enter();
         }
 
-        internal bool HasState()
+        public bool HasState()
         {
             return currentState != null;
         }
@@ -37,7 +32,7 @@ namespace CSharpConsoleHangmanGame.GameState
             currentState?.Enter();
         }
 
-        internal void UpdateCurrentState()
+        public void UpdateCurrentState()
         {
             // Has state ?
             if (currentState == null)
@@ -46,13 +41,13 @@ namespace CSharpConsoleHangmanGame.GameState
             // Update state
             var nextState = currentState.Update();
 
+            // Game feel: next "game frame" delay, clear dialogue delay
+            WaitDuration(userInputEffectDelay);
+            dialogueController.Clear();
+
             // Next state
             if (nextState != currentState)
                 ChangeState(nextState);
-
-            // Game feel: clear dialogue delay
-            WaitDuration(userInputEffectDelay);
-            dialogueController.Clear();
         }
 
         internal static void WaitDuration(TimeSpan timeout)

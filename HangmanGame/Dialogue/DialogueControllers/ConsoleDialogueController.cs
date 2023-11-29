@@ -1,25 +1,9 @@
-﻿using CSharpConsoleHangmanGame.Dialogue;
-using CSharpConsoleHangmanGame.Dialogue.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+﻿using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 
-namespace CSharpConsoleHangmanGame.IO
+namespace CSharpConsoleHangmanGame.Dialogue
 {
-    internal class ConsoleDialogueController : IDialogueController 
+    internal class ConsoleDialogueController : IDialogueController
     {
-        public void ShowInputOptions(string[] options)
-        {
-            foreach (var option in options)
-            {
-                var finalText = AddSpace(option);
-                Console.WriteLine(finalText);
-            }
-        }
-
         public void ShowMessage(string? text)
         {
             var finalText = AddPrefix(AddSpace(text));
@@ -36,6 +20,15 @@ namespace CSharpConsoleHangmanGame.IO
             Console.Clear();
         }
 
+        //public void ClearLastLine()
+        //{
+        //    Console.SetCursorPosition(0, Console.CursorTop - 1);
+        //    int currentLineCursor = Console.CursorTop;
+        //    Console.SetCursorPosition(0, Console.CursorTop);
+        //    Console.Write(new string(' ', Console.BufferWidth));
+        //    Console.SetCursorPosition(0, currentLineCursor);
+        //}
+
         public static string? AddSpace(string? text)
         {
             if (text != null && text != "")
@@ -48,6 +41,41 @@ namespace CSharpConsoleHangmanGame.IO
             if (text != null && text != "")
                 text = "> " + text;
             return text;
+        }
+
+        public void JumpLine()
+        {
+            ShowMessage("");
+        }
+
+        public bool ReadInputOption(InputOption[] options)
+        {
+            // Show options
+            var optionKeyValueSeparator = ". ";
+            foreach (var option in options)
+            {
+                var fullOptionText = AddSpace(option.Key + optionKeyValueSeparator + option.Value);
+                ShowMessage(fullOptionText);
+            }
+            
+            JumpLine();
+            
+            // Get input
+            var rawInput = ReadInput();
+            if (rawInput == null)
+                return false;
+            var input = rawInput.ToLower();
+
+            // Execute action of chosen option
+            foreach (var option in options)
+            {
+                if (input == option.Key.ToLower())
+                {
+                    option.Action();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

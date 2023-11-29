@@ -7,10 +7,9 @@ namespace CSharpConsoleHangmanGame.SecretWordHangman
 {
     internal class WordsDatabase : IWordsDatabase
     {
-        readonly string wordsFilePath = "GameData/BuildGameData/Words/en_1.txt";
         readonly WordsDatabaseModel wordsDatabaseModel;
 
-        internal WordsDatabase(IDebugLog debugLog)
+        internal WordsDatabase(IDebugLog debugLog, string wordsFilePath)
         {
             var fileReader = new FileReader(debugLog);
             var readObj = fileReader.GetObjectFromJsonFileInRoot<WordsDatabaseModel>(wordsFilePath);
