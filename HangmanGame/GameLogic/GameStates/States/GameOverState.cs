@@ -39,7 +39,7 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
 
         public IGameState? Update()
         {
-            IGameState returnState = this;
+            IGameState? returnState = this;
 
             // Dialogue Database
             var db = dialogueDatabase.GameOverDialogueDatabase;
@@ -56,28 +56,14 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
 
             // Option 1
             inputOptions[0] = new DialogueOptionData(
-                text: db.EndChoicePlayAgainOption,
-                action: () =>
-                {
-                    OnPlayAgainOptionChosen();
-                    returnState = new InGameState(debugLog,
-                                                  dialogueController,
-                                                  dialogueDatabase,
-                                                  configs);
-                }
+                text   : db.EndChoicePlayAgainOption,
+                action : () => { returnState = PlayAgain(); }
             );
 
             // Option 2
             inputOptions[1] = new DialogueOptionData(
-                text: db.EndChoiceExitToMenuOption,
-                action: () =>
-                {
-                    OnExitToMenuOptionChosen();
-                    returnState = new MenuState(debugLog,
-                                                dialogueController,
-                                                dialogueDatabase,
-                                                configs);
-                }
+                text   : db.EndChoiceExitToMenuOption,
+                action : () => { returnState = ExitToMenu(); }
             );
 
             // Execute chosen option
@@ -86,14 +72,20 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
             return returnState;
         }
 
-        internal void OnPlayAgainOptionChosen()
+        internal IGameState? PlayAgain()
         {
-
+            return new InGameState(debugLog,
+                                   dialogueController,
+                                   dialogueDatabase,
+                                   configs);
         }
 
-        internal void OnExitToMenuOptionChosen()
+        internal IGameState? ExitToMenu()
         {
-
+            return new MenuState(debugLog,
+                                 dialogueController,
+                                 dialogueDatabase,
+                                 configs);
         }
     }
 }

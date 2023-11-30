@@ -38,16 +38,6 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
 
         }
 
-        public void OnStartGameOptionChosen()
-        {
-
-        }
-
-        public void OnExitGameOptionChosen()
-        {
-
-        }
-
         public IGameState? Update()
         {
             IGameState? returnState = this;
@@ -64,30 +54,35 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
             // Option 1
             inputOptions[0] = new DialogueOptionData(
                 text: db.StartChoiseStartGameOption,
-                action: () =>
-                {
-                    OnStartGameOptionChosen();
-                    returnState = new InGameState(debugLog,
-                                                  dialogueController,
-                                                  dialogueDatabase,
-                                                  configs);
-                }
+                action: () => { returnState = StartGame(); }
             );
 
             // Option 2
             inputOptions[1] = new DialogueOptionData(
                 text: db.StartChoiseExitGameOption,
-                action: () =>
-                {
-                    OnExitGameOptionChosen();
-                    returnState = null;
-                }
+                action: () => { returnState = ExitGamen(); }
             );
 
             // Execute chosen option
             dialogueController.ShowOptionsAndExecuteChosen(inputOptions);
 
             return returnState;
+        }
+
+        public IGameState? StartGame()
+        {
+            return new InGameState(debugLog,
+                                  dialogueController,
+                                  dialogueDatabase,
+                                  configs);
+        }
+
+        public IGameState? ExitGamen()
+        {
+            return new InGameState(debugLog,
+                                   dialogueController,
+                                   dialogueDatabase,
+                                   configs);
         }
     }
 }

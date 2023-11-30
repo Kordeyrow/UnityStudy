@@ -113,14 +113,14 @@ namespace CSharpConsoleHangmanGame.GameLogic.GameStates.States
             return this;
         }
 
-        internal void NewSecretWord()
-        {
-
-        }
-
         private static bool IsLetter(string? s)
         {
             return s != null && s.Length == 1 && char.IsLetter(s[0]);
+        }
+
+        internal void NewSecretWord()
+        {
+
         }
     }
 }
