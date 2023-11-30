@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace CSharpConsoleHangmanGame.Dialogue.Interfaces
 {
-    internal interface IInputOptionsKeys
+    internal interface IDialogueOptionsInputKeys
     {
-        string Confirm();
-        string Cancel();
-
-        string Option1();
-        string Option2();
-        string Option3();
+        string ConfirmKey { get; }
+        string CancelKey { get; }
+        string[] OptionsKeys(int optionsCount);
     }
 }

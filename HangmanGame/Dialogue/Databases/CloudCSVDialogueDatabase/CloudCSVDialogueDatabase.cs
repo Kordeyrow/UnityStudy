@@ -3,7 +3,7 @@ using CSharpConsoleHangmanGame.Dialogue.Databases;
 using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using CSharpConsoleHangmanGame.HttpService;
 
-namespace CSharpConsoleHangmanGame.Dialogue
+namespace CSharpConsoleHangmanGame.Dialogue.Databases.CloudCSVDialogueDatabase
 {
     internal class CloudCSVDialogueDatabase : IDialogueDatabase
     {
@@ -84,12 +84,12 @@ namespace CSharpConsoleHangmanGame.Dialogue
                     // Add all Dialogue Units from current section
                     // Keys below [title column], Values (Text) below [title column + 1]
                     var offset = 1;
-                    for (int currentRowId = rowId +1 +offset; currentRowId < rows.Length; currentRowId++)
+                    for (int currentRowId = rowId + 1 + offset; currentRowId < rows.Length; currentRowId++)
                     {
                         string[] rawRowCellsTxts = rows[currentRowId].Split(cellSplitChar);
 
                         // Format cell text
-                        string[] formatedRowCellsTxts = (string[]) rawRowCellsTxts.Clone();
+                        string[] formatedRowCellsTxts = (string[])rawRowCellsTxts.Clone();
                         for (int i = 0; i < rawRowCellsTxts.Length; i++)
                             foreach (var substituteCharsPair in substituteCharsPairs)
                                 formatedRowCellsTxts[i] = formatedRowCellsTxts[i].Replace(substituteCharsPair.Key.ToString(), substituteCharsPair.Value);
@@ -113,95 +113,6 @@ namespace CSharpConsoleHangmanGame.Dialogue
             }
 
             return dialogueSections;
-        }
-    }
-
-    internal class MenuDialogueDatabase : IMenuDialogueDatabase
-    {
-        readonly IMenuDialogueUnitKeys menuDialogueUnitKeys;
-        readonly Section section;
-
-        internal MenuDialogueDatabase(IMenuDialogueUnitKeys menuDialogueUnitKeys, Section section)
-        {
-            this.menuDialogueUnitKeys = menuDialogueUnitKeys;
-            this.section = section;
-        }
-
-        public string WelcomeMessage             => section.GetText(menuDialogueUnitKeys.WelcomeMessage);
-        public string StartChoiseQuestion        => section.GetText(menuDialogueUnitKeys.StartChoiceQuestion);
-        public string StartChoiseStartGameOption => section.GetText(menuDialogueUnitKeys.StartChoiceStartGameOption);
-        public string StartChoiseExitGameOption  => section.GetText(menuDialogueUnitKeys.StartChoiceExitGameOption);
-    }
-
-    internal class InGameDialogueDatabase : IInGameDialogueDatabase
-    {
-        readonly IInGameDialogueUnitKeys inGameDialogueUnitKeys;
-        readonly Section section;
-
-        internal InGameDialogueDatabase(IInGameDialogueUnitKeys inGameDialogueUnitKeys, Section section)
-        {
-            this.inGameDialogueUnitKeys = inGameDialogueUnitKeys;
-            this.section = section;
-        }
-        public string GameStartedMessage => section.GetText(inGameDialogueUnitKeys.GameStartedMessage); 
-        public string LetterRequest      => section.GetText(inGameDialogueUnitKeys.RequestLetterRequest);
-    }
-
-    internal class GameOverDialogueDatabase : IGameOverDialogueDatabase
-    {
-        readonly IGameOverDialogueUnitKeys gameOverDialogueUnitKeys;
-        readonly Section section;
-
-        internal GameOverDialogueDatabase(IGameOverDialogueUnitKeys gameOverDialogueUnitKeys, Section section)
-        {
-            this.gameOverDialogueUnitKeys = gameOverDialogueUnitKeys;
-            this.section = section;
-        }
-
-        public string WinMessage                => section.GetText(gameOverDialogueUnitKeys.WinMessage);
-        public string LoseMessage               => section.GetText(gameOverDialogueUnitKeys.LoseMessage);
-        public string EndChoiceQuestion         => section.GetText(gameOverDialogueUnitKeys.EndChoiceQuestion);
-        public string EndChoicePlayAgainOption  => section.GetText(gameOverDialogueUnitKeys.EndChoicePlayAgainOption);
-        public string EndChoiceExitToMenuOption => section.GetText(gameOverDialogueUnitKeys.EndChoiceExitToMenuOption);
-    }
-
-    internal class DialogueSections
-    {
-        internal Section Menu { get; set; }
-        internal Section InGame { get; set; }
-        internal Section GameOver { get; set; }
-
-        internal DialogueSections()
-        {
-            Menu = new Section(FormatedSectionTitle("menu"));
-            InGame = new Section(FormatedSectionTitle("inGame"));
-            GameOver = new Section(FormatedSectionTitle("gameOver"));
-        }
-
-        // TODO: remove duplicated method
-        internal static string FormatedSectionTitle(string s) => s.ToLower().Replace(" ", "");
-    }
-
-    internal class Section
-    {
-        internal string Name { get; private set; }
-        readonly Dictionary<string, string> dialogueUnits;
-
-        internal Section(string name)
-        {
-            Name = name;
-            dialogueUnits = new Dictionary<string, string>();
-        }
-
-        internal void AddDialogueUnit(string key, string value)
-        {
-            dialogueUnits.Add(key, value);
-        }
-
-        internal string GetText(string key)
-        {
-            var text = dialogueUnits.GetValueOrDefault(key) ?? "";
-            return text;
         }
     }
 }

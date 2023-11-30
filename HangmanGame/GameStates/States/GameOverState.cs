@@ -1,4 +1,5 @@
 ﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.DialogueControllers;
 using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using CSharpConsoleHangmanGame.GameData.Interfaces;
 using CSharpConsoleHangmanGame.GameStates.Interfaces;
@@ -10,14 +11,14 @@ namespace CSharpConsoleHangmanGame.GameStates.States
         readonly IDebugLog           debugLog;
         readonly IDialogueController dialogueController;
         readonly IDialogueDatabase   dialogueDatabase;
-        readonly IInputOptionsKeys   inputOptionsKeys;
+        readonly IDialogueOptionsInputKeys   inputOptionsKeys;
         readonly IConfigs            configs;
         readonly bool                win;
 
         public GameOverState(IDebugLog           debugLog, 
                              IDialogueController dialogueController,
                              IDialogueDatabase   dialogueDatabase,
-                             IInputOptionsKeys   inputOptionsKeys,
+                             IDialogueOptionsInputKeys   inputOptionsKeys,
                              IConfigs            configs,
                              bool                win)
         {
@@ -29,18 +30,9 @@ namespace CSharpConsoleHangmanGame.GameStates.States
             this.win = win;
         }
 
-        internal void PlayAgain()
-        {
-
-        }
-
-        internal void ExitToMenu()
-        {
-
-        }
-
         public void Enter()
         {
+
         }
 
         public void Exit()
@@ -52,37 +44,61 @@ namespace CSharpConsoleHangmanGame.GameStates.States
         {
             IGameState returnState = this;
 
-            // Show results message
+            // Dialogue Database
             var db = dialogueDatabase.GameOverDialogueDatabase;
+
+            // Show results message
             string resultsMsg = win ? db.WinMessage : db.LoseMessage;
             dialogueController.ShowMessage(resultsMsg);
 
-            dialogueController.ReadInputOption(new InputOption[] { 
-                new InputOption(inputOptionsKeys.Option1(), 
-                                dialogueDatabase.GameOverDialogueDatabase.EndChoicePlayAgainOption,
-                                () => {
-                                    PlayAgain();
-                                    returnState = new InGameState(debugLog,
-                                                                  dialogueController,
-                                                                  dialogueDatabase,
-                                                                  inputOptionsKeys,
-                                                                  configs);
-                                }
-                ),
-                new InputOption(inputOptionsKeys.Option2(),
-                                dialogueDatabase.GameOverDialogueDatabase.EndChoiceExitToMenuOption,
-                                () => {
-                                    ExitToMenu();
-                                    returnState = new MenuState(debugLog,
-                                                                dialogueController,
-                                                                dialogueDatabase,
-                                                                inputOptionsKeys,
-                                                                configs);
-                                }
-                ),
-            });
+            // Show EndChoice question
+            dialogueController.ShowMessage(db.EndChoiceQuestion);
+
+            // EndChoice options
+            var inputOptions = new DialogueOptionData[2];
+
+            // Option 1
+            inputOptions[0] = new DialogueOptionData(
+                text   : db.EndChoicePlayAgainOption, 
+                action : () => 
+                {
+                    OnPlayAgainOptionChosen();
+                    returnState = new InGameState(debugLog,
+                                                  dialogueController,
+                                                  dialogueDatabase,
+                                                  inputOptionsKeys,
+                                                  configs);
+                }
+            );
+
+            // Option 2
+            inputOptions[1] = new DialogueOptionData(
+                text   : db.EndChoiceExitToMenuOption,
+                action : () =>
+                {
+                    OnExitToMenuOptionChosen();
+                    returnState = new MenuState(debugLog,
+                                                dialogueController,
+                                                dialogueDatabase,
+                                                inputOptionsKeys,
+                                                configs);
+                }
+            );
+
+            // Execute chosen option
+            dialogueController.ShowOptionsAndExecuteChosen(inputOptions);
 
             return returnState;
+        }
+
+        internal void OnPlayAgainOptionChosen()
+        {
+
+        }
+
+        internal void OnExitToMenuOptionChosen()
+        {
+
         }
     }
 }

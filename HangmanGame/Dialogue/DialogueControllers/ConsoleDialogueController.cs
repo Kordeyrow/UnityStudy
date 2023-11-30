@@ -1,9 +1,17 @@
-﻿using CSharpConsoleHangmanGame.Dialogue.Interfaces;
+﻿using CSharpConsoleHangmanGame.Dialogue.Databases;
+using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 
 namespace CSharpConsoleHangmanGame.Dialogue
 {
     internal class ConsoleDialogueController : IDialogueController
     {
+        IDialogueOptionsInputKeys inputOptionsKeys;
+
+        public ConsoleDialogueController(IDialogueOptionsInputKeys inputOptionsKeys)
+        {
+            this.inputOptionsKeys = inputOptionsKeys;
+        }
+
         public void ShowMessage(string? text)
         {
             var finalText = AddPrefix(AddSpace(text));
@@ -48,13 +56,17 @@ namespace CSharpConsoleHangmanGame.Dialogue
             ShowMessage("");
         }
 
-        public bool ReadInputOption(InputOption[] options)
+        public bool ShowOptionsAndExecuteChosen(IDialogueOptionData[] options)
         {
             // Show options
             var optionKeyValueSeparator = ". ";
-            foreach (var option in options)
+
+            var inputOptionsKeys = this.inputOptionsKeys.OptionsKeys(options.Length);
+
+            for (int i = 0; i < inputOptionsKeys.Length; i++)
             {
-                var fullOptionText = AddSpace(option.Key + optionKeyValueSeparator + option.Value);
+                var option = options[i];
+                var fullOptionText = AddSpace(inputOptionsKeys[i] + optionKeyValueSeparator + option.Text);
                 ShowMessage(fullOptionText);
             }
             
@@ -66,12 +78,12 @@ namespace CSharpConsoleHangmanGame.Dialogue
                 return false;
             var input = rawInput.ToLower();
 
-            // Execute action of chosen option
-            foreach (var option in options)
+            // Execute chosen option
+            for (int i = 0; i < inputOptionsKeys.Length; i++)
             {
-                if (input == option.Key.ToLower())
+                if (input.ToLower() == inputOptionsKeys[i].ToLower())
                 {
-                    option.Action();
+                    options[i].Action();
                     return true;
                 }
             }

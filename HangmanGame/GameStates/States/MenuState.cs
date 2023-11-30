@@ -1,4 +1,5 @@
 ﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Dialogue.DialogueControllers;
 using CSharpConsoleHangmanGame.Dialogue.Interfaces;
 using CSharpConsoleHangmanGame.GameData.Interfaces;
 using CSharpConsoleHangmanGame.GameStates.Interfaces;
@@ -7,18 +8,18 @@ namespace CSharpConsoleHangmanGame.GameStates.States
 {
     internal class MenuState : IGameState
     {
-        readonly IDebugLog           debugLog;
-        readonly IDialogueController dialogueController;
-        readonly IDialogueDatabase   dialogueDatabase;
-        readonly IInputOptionsKeys   inputOptionsKeys;
-        readonly IConfigs            configs;
+        readonly IDebugLog                 debugLog;
+        readonly IDialogueController       dialogueController;
+        readonly IDialogueDatabase         dialogueDatabase;
+        readonly IDialogueOptionsInputKeys inputOptionsKeys;
+        readonly IConfigs                  configs;
 
         public MenuState(
-            IDebugLog           debugLog, 
-            IDialogueController dialogueController, 
-            IDialogueDatabase   dialogueDatabase,
-            IInputOptionsKeys   inputOptionsKeys,
-            IConfigs            configs)
+            IDebugLog                  debugLog, 
+            IDialogueController        dialogueController, 
+            IDialogueDatabase          dialogueDatabase,
+            IDialogueOptionsInputKeys  inputOptionsKeys,
+            IConfigs                   configs)
         {
             this.debugLog           = debugLog;
             this.dialogueController = dialogueController;
@@ -35,12 +36,17 @@ namespace CSharpConsoleHangmanGame.GameStates.States
             dialogueController.ShowMessage(db.WelcomeMessage);
         }
 
-        public void OnStartGameOption()
+        public void Exit()
         {
 
         }
 
-        public void OnExitGameOption()
+        public void OnStartGameOptionChosen()
+        {
+
+        }
+
+        public void OnExitGameOptionChosen()
         {
 
         }
@@ -49,38 +55,43 @@ namespace CSharpConsoleHangmanGame.GameStates.States
         {
             IGameState? returnState = this;
 
+            // Dialogue Database
             var db = dialogueDatabase.MenuDialogueDatabase;
 
-            // Show start choise question
+            // Show StartChoice question
             dialogueController.ShowMessage(db.StartChoiseQuestion);
 
-            dialogueController.ReadInputOption(new InputOption[] {
-                new InputOption(inputOptionsKeys.Option1(),
-                                db.StartChoiseStartGameOption,
-                                () => {
-                                    OnStartGameOption();
-                                    returnState = new InGameState(debugLog,
-                                                                  dialogueController,
-                                                                  dialogueDatabase,
-                                                                  inputOptionsKeys,
-                                                                  configs);
-                                }
-                ),
-                new InputOption(inputOptionsKeys.Option2(),
-                                db.StartChoiseExitGameOption,
-                                () => {
-                                    OnExitGameOption();
-                                    returnState = null;
-                                }
-                ),
-            });
+            // StartChoice options
+            var inputOptions = new DialogueOptionData[2];
+
+            // Option 1
+            inputOptions[0] = new DialogueOptionData(
+                text   : db.StartChoiseStartGameOption,
+                action : () =>
+                {
+                    OnStartGameOptionChosen();
+                    returnState = new InGameState(debugLog,
+                                                  dialogueController,
+                                                  dialogueDatabase,
+                                                  inputOptionsKeys,
+                                                  configs);
+                }
+            );
+
+            // Option 2
+            inputOptions[1] = new DialogueOptionData(
+                text   : db.StartChoiseExitGameOption,
+                action : () =>
+                {
+                    OnExitGameOptionChosen();
+                    returnState = null;
+                }
+            );
+
+            // Execute chosen option
+            dialogueController.ShowOptionsAndExecuteChosen(inputOptions);
 
             return returnState;
-        }
-
-        public void Exit()
-        {
-
         }
     }
 }

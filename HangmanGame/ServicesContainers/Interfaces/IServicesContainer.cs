@@ -14,7 +14,7 @@ namespace CSharpConsoleHangmanGame.ServicesContainers.Interfaces
     {
         IDebugLog DebugLog { get; }
         IDialogueController DialogueController { get; }
-        IInputOptionsKeys InputOptionsKeys { get; }
+        IDialogueOptionsInputKeys DialogueOptionsInputKeys { get; }
         IDialogueDatabase DialogueDatabase { get; }
         IGameState InitialGameState { get; }
         IDialogueUnitKeys DialogueUnitKeys { get; }

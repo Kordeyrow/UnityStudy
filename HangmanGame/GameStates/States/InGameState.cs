@@ -11,7 +11,7 @@ namespace CSharpConsoleHangmanGame.GameStates.States
         readonly IDebugLog           debugLog;
         readonly IDialogueController dialogueController;
         readonly IDialogueDatabase   dialogueDatabase;
-        readonly IInputOptionsKeys   inputOptionsKeys;
+        readonly IDialogueOptionsInputKeys   inputOptionsKeys;
         readonly WordsDatabase       wordsDatabase;
         readonly IConfigs            configs;
         private SecretWord           secretWord;
@@ -21,7 +21,7 @@ namespace CSharpConsoleHangmanGame.GameStates.States
         public InGameState(IDebugLog           debugLog, 
                            IDialogueController dialogueController, 
                            IDialogueDatabase   dialogueDatabase,
-                           IInputOptionsKeys   inputOptionsKeys,
+                           IDialogueOptionsInputKeys   inputOptionsKeys,
                            IConfigs            configs)
         {
             this.debugLog           = debugLog;
@@ -41,74 +41,80 @@ namespace CSharpConsoleHangmanGame.GameStates.States
             secretWord.Init(randomWord);
             hangman.Init();
 
+            // Dialogue Database
             var db = dialogueDatabase.InGameDialogueDatabase;
 
             // Show game started message
             dialogueController.ShowMessage(db.GameStartedMessage);
         }
 
+        public void Exit()
+        {
+
+        }
+
         public IGameState? Update()
         {
+            // Dialogue Database
             var db = dialogueDatabase.InGameDialogueDatabase;
 
-
-            // Ask user for letter
+            // Show letter request
             dialogueController.ShowMessage(db.LetterRequest);
 
             // Draw game
             secretWord.Draw();
             hangman.Draw();
 
+            // Read letter input
             var input = dialogueController.ReadInput();
             if (input == null || IsLetter(input) == false)
                 return this;
             var letter = input[0];
 
-            // Good letter (reward)
+            // Correct letter (reward)
             if (secretWord.HasLetter(letter))
             {
-                // Ignore letter ?
+                // Ignore revealed letter
                 if (secretWord.IsLetterRevealed(letter))
                     return this;
 
                 // Reveal letter
                 secretWord.RevealLetter(letter);
 
-                // Win ?
+                // Win ? -> GameOver state
                 if (secretWord.IsComplete())
-                    return new GameOverState(debugLog, 
-                                             dialogueController, 
+                {
+                    return new GameOverState(debugLog,
+                                             dialogueController,
                                              dialogueDatabase,
                                              inputOptionsKeys,
                                              configs,
                                              true);
+                }
 
-                // Continue
+                // Next try
                 return this;
             }
-            // Bad letter (penalty)
-            else
+
+            // Wrong letter (penalty)
+
+            // Apply penalty
+            hangman.AddPart();
+
+            // Lose ? -> GameOver state
+            if (hangman.IsComplete())
             {
-                // Apply penalty
-                hangman.AddPart();
-
-                // Lose ?
-                if (hangman.IsComplete())
-                    return new GameOverState(debugLog, 
-                                             dialogueController, 
-                                             dialogueDatabase,
-                                             inputOptionsKeys,
-                                             configs, 
-                                             false);
-
-                // Continue
-                return this;
+                return new GameOverState(
+                    debugLog,
+                    dialogueController,
+                    dialogueDatabase,
+                    inputOptionsKeys,
+                    configs,
+                    false);
             }
-        }
 
-        public void Exit()
-        {
-
+            // Next try
+            return this;
         }
 
         internal void NewSecretWord()
