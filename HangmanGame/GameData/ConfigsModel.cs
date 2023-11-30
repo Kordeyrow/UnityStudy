@@ -4,7 +4,7 @@ using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-    
+
 namespace CSharpConsoleHangmanGame.GameData
 {
     internal class ConfigsModel

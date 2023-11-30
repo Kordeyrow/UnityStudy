@@ -2,7 +2,7 @@
 
 var game = new Game();
 
-// For http requests
+// For api requests
 await game.Init();
 
 game.Run();

@@ -1,4 +1,4 @@
-﻿using CSharpConsoleHangmanGame.GameStates.Interfaces;
+﻿using CSharpConsoleHangmanGame.GameLogic.GameStates.Interfaces;
 using CSharpConsoleHangmanGame.ServicesContainers;
 using CSharpConsoleHangmanGame.ServicesContainers.Interfaces;
 
@@ -13,7 +13,7 @@ namespace CSharpConsoleHangmanGame
         {
             servicesContainer = new TestAServicesContainer();
 
-            // Some services (like database) needs Init out of constructor to use await for http request
+            // Some services (like database) needs Init out of constructor to use await for api request
             await servicesContainer.Init();
 
             gameStateManager = servicesContainer.GameStateManager;

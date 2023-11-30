@@ -1,7 +1,6 @@
-﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
-using CSharpConsoleHangmanGame.Dialogue.Databases;
-using CSharpConsoleHangmanGame.Dialogue.Interfaces;
-using CSharpConsoleHangmanGame.GameStates.Interfaces;
+﻿using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.GameLogic.GameStates.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.Debugging.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

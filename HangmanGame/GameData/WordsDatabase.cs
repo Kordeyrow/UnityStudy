@@ -1,9 +1,8 @@
-﻿using CSharpConsoleHangmanGame.Debugging;
-using CSharpConsoleHangmanGame.Debugging.Interfaces;
-using CSharpConsoleHangmanGame.FileManaging;
-using CSharpConsoleHangmanGame.SecretWordHangman.Interfaces;
+﻿using CSharpConsoleHangmanGame.GameLogic.SecretWordHangman.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.FileManaging;
 
-namespace CSharpConsoleHangmanGame.SecretWordHangman
+namespace CSharpConsoleHangmanGame.GameData
 {
     internal class WordsDatabase : IWordsDatabase
     {

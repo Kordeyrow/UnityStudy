@@ -1,12 +1,6 @@
-﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
-using CSharpConsoleHangmanGame.FileManaging;
-using CSharpConsoleHangmanGame.GameData.Interfaces;
-using CSharpConsoleHangmanGame.SecretWordHangman;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CSharpConsoleHangmanGame.GameData.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.FileManaging;
 
 namespace CSharpConsoleHangmanGame.GameData
 {

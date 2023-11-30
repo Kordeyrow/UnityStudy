@@ -1,18 +1,16 @@
-﻿using CSharpConsoleHangmanGame.Debugging.Interfaces;
-using CSharpConsoleHangmanGame.Debugging;
-using CSharpConsoleHangmanGame.Dialogue.DialogueOptionsInputKeys;
-using CSharpConsoleHangmanGame.Dialogue.Interfaces;
-using CSharpConsoleHangmanGame.Dialogue;
-using CSharpConsoleHangmanGame.GameData;
-using CSharpConsoleHangmanGame.GameStates.Interfaces;
-using CSharpConsoleHangmanGame.GameStates.States;
-using CSharpConsoleHangmanGame.GameStates;
-using CSharpConsoleHangmanGame.Dialogue;
-using CSharpConsoleHangmanGame.Dialogue.Databases;
+﻿using CSharpConsoleHangmanGame.ServicesContainers.Interfaces;
+using CSharpConsoleHangmanGame.HelperServices.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.Interfaces;
+using CSharpConsoleHangmanGame.GameLogic.GameStates.Interfaces;
+using CSharpConsoleHangmanGame.GameLogic.GameStates;
+using CSharpConsoleHangmanGame.GameLogic.GameStates.States;
+using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueControllers;
+using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueOptionsInputKeys;
+using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.Databases.CloudCSVDialogueDatabase;
+using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueUnitKeys;
+using CSharpConsoleHangmanGame.HelperServices.Debugging;
 using CSharpConsoleHangmanGame.GameData.Interfaces;
-using CSharpConsoleHangmanGame.ServicesContainers.Interfaces;
-using CSharpConsoleHangmanGame.Dialogue.DialogueUnitKeys;
-using CSharpConsoleHangmanGame.Dialogue.Databases.CloudCSVDialogueDatabase;
+using CSharpConsoleHangmanGame.GameData;
 
 namespace CSharpConsoleHangmanGame.ServicesContainers
 {
@@ -33,7 +31,8 @@ namespace CSharpConsoleHangmanGame.ServicesContainers
             Configs = new Configs(DebugLog);
 
             DialogueUnitKeys = new DialogueUnitKeys();
-            DialogueDatabase = new CloudCSVDialogueDatabase(Configs.DialogueDatabaseURL,
+            DialogueDatabase = new CloudCSVDialogueDatabase(DebugLog,
+                                                            Configs.DialogueDatabaseURL,
                                                             DialogueUnitKeys);
             await DialogueDatabase.Init();
 
@@ -42,7 +41,6 @@ namespace CSharpConsoleHangmanGame.ServicesContainers
             InitialGameState         = new MenuState(DebugLog,
                                                      DialogueController,
                                                      DialogueDatabase,
-                                                     DialogueOptionsInputKeys,
                                                      Configs);
 
             GameStateManager = new GameStateManager(DialogueController, InitialGameState);
