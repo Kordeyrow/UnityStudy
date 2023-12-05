@@ -28,7 +28,7 @@
 	Game flow Diagram
 -->
 
-## GameFlow Diagram
+## GameFlow / GameComponents Diagrams
 
 ```mermaid
 stateDiagram-v2
@@ -144,3 +144,19 @@ classDef BlueData fill:#4444ff, stroke:#000000, stroke-width:4px,color:#000000, 
 class Text BlueData
 class Action BlueData
 ```
+
+
+### Extra Feature: Reading data from Google Sheets
+
+![image](https://github.com/Kordeyrow/UnityStudy-HangmanGameConsole/assets/23510135/e7d9e3d8-dd7b-4b99-b04b-508adbd3c659)
+
+
+### User Settings:
+
+![image](https://github.com/Kordeyrow/UnityStudy-HangmanGameConsole/assets/23510135/c06df032-fde4-4bdf-9a3d-da8a7fd19937)
+
+![image](https://github.com/Kordeyrow/UnityStudy-HangmanGameConsole/assets/23510135/aa4499cc-a6a4-4e96-9b7f-bc5c5124582a)
+
+![image](https://github.com/Kordeyrow/UnityStudy-HangmanGameConsole/assets/23510135/385e1c62-cd1e-4ea6-9835-b814d7baee1a)
+
+![image](https://github.com/Kordeyrow/UnityStudy-HangmanGameConsole/assets/23510135/79cf8336-3670-4147-b96e-ca1695255c6a)
