@@ -1,37 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+      <OutputType>Exe</OutputType>
+      <TargetFramework>net6.0</TargetFramework>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <ApplicationIcon>AppSettings\Logo\logo-ico.ico</ApplicationIcon>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="GameData\Words\**" />
-    <EmbeddedResource Remove="GameData\Words\**" />
-    <None Remove="GameData\Words\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="AppSettings\Logo\logo-ico.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="GameData\Configs.txt" />
-    <None Remove="GameData\Words.txt" />
-  </ItemGroup>
+    <ItemGroup>
+	    <Content Include="AppSettings\UserGameSettingsFiles\**">
+		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Game Settings\%(RecursiveDir)%(Filename)%(Extension)</Link>
+	    </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="GameData\Dialogues\pt-br.txt">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Optional" Version="4.0.0" />
+	</ItemGroup>
 
-<ItemGroup>
-	<Content Include="GameData\BuildGameData\**">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</Content>
-</ItemGroup>
-
-<ItemGroup>
-  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-</ItemGroup>
+	<ItemGroup>
+	  <Content Update="AppSettings\UserGameSettingsFiles\GuessWords\en_1.json" Link="Game Settings\GuessWords\en_1.json" />
+	</ItemGroup>
 
 </Project>

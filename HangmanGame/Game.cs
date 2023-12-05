@@ -1,32 +1,26 @@
-﻿using CSharpConsoleHangmanGame.GameLogic.GameStates.Interfaces;
-using CSharpConsoleHangmanGame.ServicesContainers;
-using CSharpConsoleHangmanGame.ServicesContainers.Interfaces;
+﻿using CSharpConsoleHangmanGame.GameStates.Interfaces;
 
 namespace CSharpConsoleHangmanGame
 {
     internal class Game
     {
-        IServicesContainer servicesContainer;
-        IGameStateManager gameStateManager;
+        readonly IGameStateManager gameStateManager;
 
-        internal async Task Init()
+        public Game(IGameStateManager gameStateManager)
         {
-            servicesContainer = new TestAServicesContainer();
-
-            // Some services (like database) needs Init out of constructor to use await for api request
-            await servicesContainer.Init();
-
-            gameStateManager = servicesContainer.GameStateManager;
+            this.gameStateManager = gameStateManager;
         }
 
         internal void Run()
         {
             gameStateManager.Start();
 
-            while (gameStateManager.HasState())
+            while (gameStateManager.CloseGameState() == false)
             {
                 gameStateManager.UpdateCurrentState();
             }
+
+            gameStateManager.End();
         }
     }
 }

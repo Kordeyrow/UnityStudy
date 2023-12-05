@@ -1,9 +1,0 @@
-{
-  "language": "pt-br",
-  "URLs": {
-    "dialogueDataBase": "https://docs.google.com/spreadsheets/u/0/d/1g_fUTHTC-jp19mf_K61NgTANUyR3xrmVZiGN25DH46Y/export?format=csv&id=1g_fUTHTC-jp19mf_K61NgTANUyR3xrmVZiGN25DH46Y&gid=0"
-  },
-  paths: {
-    "wordsFilePath": "GameData/BuildGameData/Words/en_1.txt",
-  }
-}

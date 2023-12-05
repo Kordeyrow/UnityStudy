@@ -1,49 +1,135 @@
 ﻿using CSharpConsoleHangmanGame.ServicesContainers.Interfaces;
-using CSharpConsoleHangmanGame.HelperServices.Debugging.Interfaces;
-using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.Interfaces;
-using CSharpConsoleHangmanGame.GameLogic.GameStates.Interfaces;
-using CSharpConsoleHangmanGame.HelperServices.Debugging;
-using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueUnitKeys;
-using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.Databases.CloudCSVDialogueDatabase;
-using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueOptionsInputKeys;
-using CSharpConsoleHangmanGame.GameGenericModules.Dialogue.DialogueControllers;
-using CSharpConsoleHangmanGame.GameLogic.GameStates.States;
-using CSharpConsoleHangmanGame.GameLogic.GameStates;
-using CSharpConsoleHangmanGame.GameData.Interfaces;
-using CSharpConsoleHangmanGame.GameData;
+using CSharpConsoleHangmanGame.Utils.Debugging;
+using CSharpConsoleHangmanGame.GameSystems.Dialogue.DialogueUnitKeys;
+using CSharpConsoleHangmanGame.GameSystems.Dialogue.DialogueOptionsInputKey;
+using CSharpConsoleHangmanGame.GameSystems.Dialogue.DialogueController;
+using CSharpConsoleHangmanGame.GameStates.Interfaces;
+using CSharpConsoleHangmanGame.GameStates.States;
+using CSharpConsoleHangmanGame.GameStates;
+using CSharpConsoleHangmanGame.Utils.HttpService;
+using CSharpConsoleHangmanGame.GameObjects;
+using CSharpConsoleHangmanGame.Utils.FileManaging;
+using CSharpConsoleHangmanGame.Utils.Debugging.Interfaces;
+using CSharpConsoleHangmanGame.Databases.GuessWords;
+using CSharpConsoleHangmanGame.Databases.GuessWords.Interfaces;
+using CSharpConsoleHangmanGame.Databases.Dialogue.CloudCSVDialogueDatabase;
+using Optional;
+using CSharpConsoleHangmanGame.AppSettings.Model.Sections;
 
 namespace CSharpConsoleHangmanGame.ServicesContainers
 {
     internal class TestAServicesContainer : IServicesContainer
     {
-        public IDebugLog                 DebugLog { get; private set; }
-        public IDialogueOptionsInputKeys DialogueOptionsInputKeys { get; private set; }
-        public IDialogueController       DialogueController { get; private set; }
-        public IConfigs                  Configs { get; private set; }
-        public IDialogueUnitKeys         DialogueUnitKeys { get; private set; }
-        public IDialogueDatabase         DialogueDatabase { get; private set; }
-        public IGameState                InitialGameState { get; private set; }
-        public IGameStateManager         GameStateManager { get; private set; }
+        public Option<IGameStateManager> GameStateManager { get; private set; }
 
-        public async Task Init()
+        public async Task Init(GameConfigsModel gameConfig)
         {
-            DebugLog = new DebugLog();
-            Configs  = new Configs(DebugLog);
+            /// ( Debug ) 
+            IDebugLog debugLog = new ConsoleDebugLog();
 
-            DialogueUnitKeys = new DialogueUnitKeys();
-            DialogueDatabase = new CloudCSVDialogueDatabase(DebugLog,
-                                                            Configs.DialogueDatabaseURL, 
-                                                            DialogueUnitKeys);
-            await DialogueDatabase.Init();
+            /// ( Json Converter ) 
+            var jsonConverter = new JsonConverter(debugLog);
 
-            DialogueOptionsInputKeys   = new NumberDialogueOptionsInputKeys();
-            DialogueController = new ConsoleDialogueController(DialogueOptionsInputKeys);
-            InitialGameState   = new MenuState(DebugLog, 
-                                               DialogueController, 
-                                               DialogueDatabase,
-                                               Configs);
+            /// ( File Reader ) 
+            var fileReader = new FileReader(
+                debugLog, 
+                jsonConverter);
 
-            GameStateManager = new GameStateManager(DialogueController, InitialGameState);
+            /// ( Http Service ) 
+            var httpService = new HttpService(debugLog);
+
+            /// ( Dialogue Database ) 
+            /// 
+            var dialogueUnitKeys = new DialogueUnitKeys();
+
+            var dialogueDatabase = new CloudCSVDialogueDatabase(
+                debugLog,
+                httpService,
+                dialogueUnitKeys,
+                gameConfig.DialogueInfo.DatabaseURL,
+                gameConfig.DialogueInfo.CurrentLanguageID);            
+            await dialogueDatabase.Init();
+
+            if (dialogueDatabase.Empty)
+            {
+                debugLog.Warn("Error: Empty DialogueDatabase");
+                return;
+            }
+
+            /// ( Dialogue Controller ) 
+            /// 
+            var dialogueOptionsInputKeys = new NumberDialogueOptionsInputKeys();
+            var dialogueController       = new ConsoleDialogueController(dialogueOptionsInputKeys);
+
+            /// ( GameState Containers ) 
+            /// 
+            var menuGameStateContainer     = new GameStateContainer();
+            var inGameStateContainer       = new GameStateContainer();
+            var gameOverGameStateContainer = new GameStateContainer();
+            var closeGameStateContainer    = new GameStateContainer();
+
+            /// ( Shared GameData ) 
+            /// 
+            var sharedGameData = new SharedGameData();
+
+            /// ( GameState: MENU ) 
+            /// 
+            var menuDialogueDatabase = dialogueDatabase.MenuDialogueDatabase;
+            var menuGameState = new MenuState(
+                dialogueController,
+                menuDialogueDatabase,
+                inGameStateContainer,
+                closeGameStateContainer);
+
+            /// ( GameState: IN GAME ) 
+            /// 
+            IGuessWordsDatabase wordsDatabase = new GuessWordsDatabase(
+                fileReader,
+                gameConfig.GuessWordsInfo.DatabaseFilePath);
+            if (wordsDatabase.Empty())
+            {
+                debugLog.Warn("Error: Empty WordsDatabase");
+                return;
+            }
+            var hangman = new Hangman(dialogueController);
+            var secretWord = new SecretWord(dialogueController);
+            var inGameState = new InGameState(
+                dialogueController,
+                dialogueDatabase.InGameDialogueDatabase,
+                gameOverGameStateContainer,
+                wordsDatabase,
+                sharedGameData,
+                hangman,
+                secretWord);
+
+            /// ( GameState: GAME OVER ) 
+            /// 
+            var gameOver = new GameOverState(
+                dialogueController,
+                dialogueDatabase.GameOverDialogueDatabase,
+                inGameStateContainer,
+                menuGameStateContainer,
+                sharedGameData);
+
+            /// ( GameState: CLOSE ) 
+            /// 
+            var closeGameState = new CloseGameState(
+                dialogueController,
+                dialogueDatabase.CloseGameDialogueDatabase);
+
+            /// ( Init Containers ) 
+            /// 
+            menuGameStateContainer.Init(menuGameState);
+            inGameStateContainer.Init(inGameState);
+            gameOverGameStateContainer.Init(gameOver);
+            closeGameStateContainer.Init(closeGameState);
+
+            /// ( Start GameStateManager ) 
+            /// 
+            var gameState = new GameStateManager(
+                dialogueController,
+                menuGameState);
+            GameStateManager = Option.Some<IGameStateManager>(gameState);
         }
     }
 }
